@@ -44,12 +44,6 @@ class BulksmsSmsGatewayIT extends SpecWithJUnit {
     driver.resetProbe()
   }
 
-  "getId" should {
-    "return the ID" in new Ctx {
-      bulksms.getId must beEqualTo(BulksmsSmsGateway.id)
-    }
-  }
-
   "sendPlain" should {
     "successfully yield a message ID on valid request" in new Ctx {
       driver.aSendFor(

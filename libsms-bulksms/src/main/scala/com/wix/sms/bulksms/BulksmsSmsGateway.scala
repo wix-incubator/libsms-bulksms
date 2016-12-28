@@ -24,8 +24,6 @@ class BulksmsSmsGateway(requestFactory: HttpRequestFactory,
                         routingGroup: String = RoutingGroups.standard) extends SmsGateway {
   private val responseParser = new ResponseParser
 
-  override def getId: String = BulksmsSmsGateway.id
-
   override def sendPlain(sender: Sender, destPhone: String, text: String): Try[String] = {
     Try {
       // See http://developer.bulksms.com/eapi/submission/send_sms/
@@ -62,6 +60,10 @@ class BulksmsSmsGateway(requestFactory: HttpRequestFactory,
     }
   }
 
+  override def sendUnicode(sender: Sender, destPhone: String, text: String): Try[String] = {
+    ???
+  }
+
   private def extractAndCloseResponse(httpResponse: HttpResponse): String = {
     try {
       httpResponse.parseAsString()
@@ -69,8 +71,4 @@ class BulksmsSmsGateway(requestFactory: HttpRequestFactory,
       httpResponse.ignore()
     }
   }
-}
-
-object BulksmsSmsGateway {
-  val id = "com.bulksms"
 }

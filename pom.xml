@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>libsms-bulksms-all</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>libsms BulkSMS aggregator</name>
+    <description>libsms module for BulkSMS</description>
+	
+
+    <parent>
+        <groupId>com.wix.sms</groupId>
+        <artifactId>libsms-bulksms-parent</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
+		<relativePath>libsms-bulksms-parent</relativePath>
+    </parent>
+
+
+    <scm>
+        <url>https://github.com/wix/libsms-bulksms</url>
+        <connection>scm:git:git://github.com/wix/libsms-bulksms.git</connection>
+        <developerConnection>scm:git:git@github.com:wix/libsms-bulksms.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+
+    <modules>
+        <module>libsms-bulksms-parent</module>
+        <module>libsms-bulksms</module>
+        <module>libsms-bulksms-common</module>
+        <module>libsms-bulksms-testkit</module>
+    </modules>
+</project>

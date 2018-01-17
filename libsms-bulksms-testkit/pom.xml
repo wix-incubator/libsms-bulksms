@@ -45,9 +45,9 @@
             <version>1.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.wix.hoopoe.http</groupId>
+            <groupId>com.wix</groupId>
             <artifactId>http-testkit_${scala.dependencies.version}</artifactId>
-            <version>${com.wix.hoopoe.http.version}</version>
+            <version>${com.wix.http-testkit.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.http-client</groupId>

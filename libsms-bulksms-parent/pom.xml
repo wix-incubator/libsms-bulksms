@@ -13,8 +13,8 @@
 
     <parent>
         <groupId>com.wix</groupId>
-        <artifactId>wix-oss-parent</artifactId>
-        <version>1.4.0</version>
+        <artifactId>wix-oss-scala-parent</artifactId>
+        <version>0.47.0</version>
         <relativePath />
     </parent>
 
@@ -64,9 +64,9 @@
 
 
     <properties>
-        <com.wix.hoopoe.http.version>0.0.1</com.wix.hoopoe.http.version>
+        <com.wix.http-testkit.version>0.1.17</com.wix.http-testkit.version>
         <com.google.http.client.version>1.21.0</com.google.http.client.version>
-        <org.json4js.version>3.4.0</org.json4js.version>
+        <org.json4js.version>3.4.2</org.json4js.version>
         <com.wix.sms.libsms.version>1.1.0-SNAPSHOT</com.wix.sms.libsms.version>
     </properties>
 </project>

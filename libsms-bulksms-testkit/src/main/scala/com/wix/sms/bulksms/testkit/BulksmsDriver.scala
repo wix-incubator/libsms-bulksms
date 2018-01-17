@@ -1,31 +1,39 @@
 package com.wix.sms.bulksms.testkit
 
+import java.util.concurrent.atomic.AtomicReference
 import java.util.{List => JList}
 
+import akka.http.scaladsl.model._
 import com.google.api.client.http.UrlEncodedParser
-import com.wix.hoopoe.http.testkit.EmbeddedHttpProbe
+import com.wix.e2e.http.RequestHandler
+import com.wix.e2e.http.client.extractors.HttpMessageExtractors._
+import com.wix.e2e.http.server.WebServerFactory.aMockWebServerWith
 import com.wix.sms.bulksms.model.{StatusCodes, _}
 import com.wix.sms.bulksms.{BulksmsHelper, Credentials}
 import com.wix.sms.model.Sender
-import spray.http.{StatusCodes => HttpStatusCodes, _}
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable
 
 class BulksmsDriver(port: Int) {
-  private val probe = new EmbeddedHttpProbe(port, EmbeddedHttpProbe.NotFoundHandler)
+  private val delegatingHandler: RequestHandler = { case r: HttpRequest => handler.get().apply(r) }
+  private val notFoundHandler: RequestHandler = { case _: HttpRequest => HttpResponse(status = 404) }
+
+  private val handler = new AtomicReference(notFoundHandler)
+
+  private val probe = aMockWebServerWith(delegatingHandler).onPort(port).build
   private val responseParser = new ResponseParser
 
   def startProbe() {
-    probe.doStart()
+    probe.start()
   }
 
   def stopProbe() {
-    probe.doStop()
+    probe.stop()
   }
 
   def resetProbe() {
-    probe.handlers.clear()
+    handler.set(notFoundHandler)
   }
 
   def aSendFor(credentials: Credentials, sender: Sender, destPhone: String, text: String, routingGroup: String): SendCtx = {
@@ -36,6 +44,9 @@ class BulksmsDriver(port: Int) {
       text = text,
       routingGroup = routingGroup)
   }
+
+  private def prependHandler(handle: RequestHandler) =
+    handler.set(handle orElse handler.get())
 
   class SendCtx(credentials: Credentials, sender: Sender, destPhone: String, text: String, routingGroup: String) {
     private val expectedParams = BulksmsHelper.createRequestParams(
@@ -68,21 +79,21 @@ class BulksmsDriver(port: Int) {
     }
 
     private def returnText(responseText: String): Unit = {
-      probe.handlers += {
+      prependHandler({
         case HttpRequest(
         HttpMethods.POST,
         Uri.Path("/submission/send_sms/2/2.0"),
         headers,
         entity,
         _) if isStubbedRequestEntity(entity) => HttpResponse(
-          status = HttpStatusCodes.OK,
-          entity = HttpEntity(ContentTypes.`text/plain`, responseText)
+          status = 200,
+          entity = HttpEntity(ContentTypes.`text/plain(UTF-8)`, responseText)
         )
-      }
+      })
     }
 
     private def isStubbedRequestEntity(entity: HttpEntity): Boolean = {
-      val requestParams = urlDecode(entity.asString)
+      val requestParams = urlDecode(entity.extractAsString)
 
       requestParams == expectedParams
     }
